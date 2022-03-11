@@ -8,12 +8,11 @@
 
 
   (require j-notation/grammar
-           j-notation/lexer)
+           j-notation/lexer
+           syntax/parse)
   
 
   (define (read-syntax path port)
-    (define parse-tree (parse path (make-tokenizer port)))
-    (define module-datum
-      `(module bf-mod racket/base
-         ',parse-tree))
-    (datum->syntax #f module-datum)))
+    (syntax-parse (parse path (make-tokenizer port))
+      #:datum-literals (program)
+      [(program statement ...) #'(module j-notation racket/base 'statement ...)])))

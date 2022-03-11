@@ -17,6 +17,18 @@ interface Stream[T: Covariant] {
   method map(mapFunction: T -> R): Stream[R] {
     transduce(Transducer.mapping(mapFunction));
   }
+
+  method anyMatch(predicate: T -> Boolean): Boolean {
+    into(Reducer.anyMatch(predicate));
+  }
+
+  method allMatch(predicate: T -> Boolean): Boolean {
+    into(Reducer.allMatch(predicate));
+  }
+
+  method noneMatch(predicate: T -> Boolean): Boolean {
+    into(Reducer.noneMatch(predicate));
+  }
 }
 
 
