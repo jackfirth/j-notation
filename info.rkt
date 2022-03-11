@@ -9,7 +9,8 @@
               "j-notation")))
 
 (define deps
-  (list "base"))
+  (list "brag-lib"
+        "base"))
 
 (define build-deps
   (list "racket-doc"
