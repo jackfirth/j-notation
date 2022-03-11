@@ -1,4 +1,4 @@
 #lang scribble/manual
 
-@title{Racket Package Template}
-@defmodule[racket-package-template]
+@title{J-Notation}
+@defmodule[j-notation]
