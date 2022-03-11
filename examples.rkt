@@ -3,8 +3,8 @@
 sealed class Foo
     : extends(SuperFoo)
     // Possible alternate syntax: `: implements Printable, Evalable, Parseable`
-		: implements(Printable, Evalable, Parseable)
-		: permits(GreenFoo, BlueFoo, RedFoo) {
+    : implements(Printable, Evalable, Parseable)
+    : permits(GreenFoo, BlueFoo, RedFoo) {
 
   val bar: Int = 42;
   val bar2: Int =
@@ -13,7 +13,7 @@ sealed class Foo
   field blah: Int;
   mutable field blah2: Int = 0;
 
-	constructor Foo() {
+  constructor Foo() {
     blah2 = 42;
   }
 
