@@ -40,11 +40,11 @@ header: unindexed-name indices-specification* [components-specification]
 components-specification: "(" [contextual-specification ("," contextual-specification)* [","]] ")"
 indices-specification: "[" [contextual-specification ("," contextual-specification)* [","]] "]"
 annotation: ":" expression
-attribute: "#[" expression "]"
+attribute: "#" "[" expression "]"
 
 # STATEMENTS
 
-assignment: EQUALS-SIGN expression
+assignment: "=" expression
 reassignment: name assignment
 specification: declaration | definition
 contextual-specification: contextual-declaration | contextual-definition
@@ -65,7 +65,7 @@ block-expression:
   | block-operation
 
 inline-invocation:
-  [inline-expression "."] unqualified-name "(" (expression | reassignment) ("," (expression | reassignment))* [","] ")"
+  [inline-expression "."] unqualified-name "(" [(expression | reassignment) ("," (expression | reassignment))* [","]] ")"
 block-invocation:
   inline-invocation block
 
