@@ -58,17 +58,22 @@ block-definition: @declaration block
 
 # EXPRESSIONS
 
-expression: @inline-expression | @block-expression
-@inline-expression:
-  name | literal | inline-invocation | inline-operation | /"(" expression /")"
-
-@block-expression: block-invocation | block-operation
+@expression: @inline-expression | @block-expression
+inline-expression:
+  attribute* @attributeless-inline-expression
+attributeless-inline-expression:
+  reference | literal | inline-invocation | inline-operation | /"(" expression /")"
+reference: @name
+block-expression: attribute* (block-invocation | block-operation)
 
 inline-invocation:
-  [inline-expression /"."] unqualified-name
-  /"(" [(expression | reassignment) (/"," (expression | reassignment))* [/","]] /")"
+  [@attributeless-inline-expression /"."]
+  unqualified-name
+  parameters
 block-invocation:
   @inline-invocation block
+parameters:   /"(" [(expression | reassignment) (/"," (expression | reassignment))* [/","]] /")"
+
 
 inline-operation:
   inline-expression operator-name inline-expression
