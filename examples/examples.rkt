@@ -55,12 +55,12 @@ sealed interface Expression[T] {
   method evaluate(): T;
 
   // Only callable on `Expression[Int]`, not just any `Expression`
-  method Expression[Int].add(Expression[Int] other)
+  method Expression[Int].add(other: Expression[Int])
       : Expression[Int] {
     AddExpression(this, other);
   }
 
-  method equals(Expression[T] other): Expression[Bool] {
+  method equals(other: Expression[T]): Expression[Bool] {
     EqualsExpression(this, other);
   }
 

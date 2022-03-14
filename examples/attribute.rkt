@@ -26,3 +26,24 @@ doCrimes();
 // Expression grouping can force attributes to apply to certain expressions.
 (#[foo] a).b();
 #[foo] (a + b);
+
+// Block expressions can have attributes
+#[foo] a {
+  b;
+  c;
+  d;
+}
+
+// Attributes apply to the whole block chain when multiple blocks exist
+#[foo] a {
+  b;
+} {
+  c;
+}
+
+// Expression grouping can force attributes to apply to certain block expressions
+(#[foo] a {
+    b;
+  }) {
+  c;
+}
