@@ -7,23 +7,22 @@ interface CreditCardProcessor;
 interface TransactionLog;
 interface BillingService;
 
-injectable class RealBillingService : implements(BillingService) {
+injectable class RealBillingService {
+
+  implements BillingService;
 
   inject formatter: ReceiptFormatter;
   inject processor: #[PayPal] CreditCardProcessor;
   inject transactionLog: #[Named("production")] TransactionLog;
 
-  method chargeOrder(
-    order: PizzaOrder, creditCard: CreditCard): Receipt {
-  };
+  method chargeOrder(order: PizzaOrder, creditCard: CreditCard): Receipt;
 };
 
 record InjectionKey(optional qualifier: Qualifier, type: Type);
 
 repeated annotation injects(key: InjectionKey) {
-  constructor injects(optional qualifier: Qualifier, type: Type) {
+  constructor injects(optional qualifier: Qualifier, type: Type) =
     construct(InjectionKey(qualifier, type));
-  };
 };
 
 annotation injected(optional qualifier: Qualifier);
@@ -31,11 +30,12 @@ annotation injected(optional qualifier: Qualifier);
 // `injectable` ought to be a macro that generates a constructor accepting the injector.
 // Should probably also generate static information that can be used to statically check
 // the injection graph.
-class RealBillingService
-  : implements(BillingService)
-  : injects(ReceiptFormatter)
-  : injects(PayPal, CreditCardProcessor)
-  : injects(Named("production"), TransactionLog) {
+class RealBillingService {
+
+  implements BillingService;
+  injects(ReceiptFormatter);
+  injects(PayPal, CreditCardProcessor)
+  injects(Named("production"), TransactionLog)
 
   field formatter: ReceiptFormatter;
   field processor: CreditCardProcessor;
