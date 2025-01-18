@@ -7,36 +7,39 @@
 @title{J-Notation}
 @defmodule[j-notation]
 
+@(define body @nonterm{body})
 @(define group @nonterm{group})
 @(define expression @nonterm{expression})
-@(define identifier @nonterm{identifier})
-@(define value @nonterm{value})
-@(define parenthesized-groups @nonterm{parenthesized-groups})
-@(define bracketed-groups @nonterm{bracketed-groups})
+@(define name @nonterm{name})
+@(define operator @nonterm{operator})
+@(define literal-value @nonterm{literal-value})
+@(define parens @nonterm{parens})
+@(define brackets @nonterm{brackets})
 @(define block @nonterm{block})
 @(define group-list @nonterm{group-list})
-@(define body @nonterm{body})
 
 
 @BNF[
+ (list body
+       @BNF-seq[]
+       @BNF-seq[group]
+       @BNF-seq[group @litchar{;} body])
+
+ (list group-list
+       @BNF-seq[]
+       @BNF-seq[group]
+       @BNF-seq[group @litchar{,} group-list])
+
  (list group @kleeneplus[expression])
 
  (list expression
-       identifier
-       value
-       parenthesized-groups
-       bracketed-groups
+       name
+       operator
+       literal-value
+       parens
+       brackets
        block)
 
- (list parenthesized-groups @BNF-seq[@litchar{(} group-list @litchar{)}])
- (list bracketed-groups @BNF-seq[@litchar{[} group-list @litchar{]}])
-
- (list block @BNF-seq[@litchar["{"] body @litchar["}"]])
-
- (list group-list
-       @BNF-seq[group @optional[@litchar{,}]]
-       @BNF-seq[group @litchar{,} group-list])
-
- (list body
-       @BNF-seq[group @optional[@litchar{;}]]
-       @BNF-seq[group @litchar{;} body])]
+ (list parens @BNF-seq[@litchar{(} group-list @litchar{)}])
+ (list brackets @BNF-seq[@litchar{[} group-list @litchar{]}])
+ (list block @BNF-seq[@litchar["{"] body @litchar["}"]])]

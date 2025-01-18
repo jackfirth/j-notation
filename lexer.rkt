@@ -15,9 +15,9 @@
   (:or (:seq (:? literal-integer) "." literal-integer) (:seq literal-integer ".")))
 
 
-(define-lex-abbrev reserved-symbol (char-set "=:;[](){},.#"))
-(define-lex-abbrev simple-name (:seq alphabetic (:* (:or alphabetic numeric "_"))))
-(define-lex-abbrev simple-operator-name (:+ (char-set "!=<>+-/*^%:")))
+(define-lex-abbrev reserved-symbol (char-set ";,[](){}"))
+(define-lex-abbrev name (:seq alphabetic (:* (:or alphabetic numeric "_"))))
+(define-lex-abbrev operator (:+ (char-set "#.!=<>+-/*^%:")))
 
 
 (define (make-tokenizer port)
@@ -27,8 +27,8 @@
        [line-comment (next-token)]
        [whitespace (token lexeme #:skip? #true)]
        [reserved-symbol lexeme]
-       [simple-name (token 'SIMPLE-NAME lexeme)]
-       [simple-operator-name (token 'SIMPLE-OPERATOR-NAME lexeme)]
+       [name (token 'NAME (string->symbol lexeme))]
+       [operator (token 'OPERATOR (string->symbol lexeme))]
        [literal-integer (token 'LITERAL-INTEGER (string->number lexeme))]
        [literal-decimal (token 'LITERAL-DECIMAL (string->number lexeme))]
        [literal-string (token 'LITERAL-STRING (substring lexeme 1 (sub1 (string-length lexeme))))]))
