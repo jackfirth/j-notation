@@ -32,18 +32,10 @@ doCrimes();
   b;
   c;
   d;
-}
+};
 
 // Attributes apply to the whole block chain when multiple blocks exist
-#[foo] a {
-  b;
-} {
-  c;
-}
+#[foo] a { b } { c };
 
 // Expression grouping can force attributes to apply to certain block expressions
-(#[foo] a {
-    b;
-  }) {
-  c;
-}
+(#[foo] a { b }) { c };
