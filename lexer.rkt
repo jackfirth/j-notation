@@ -22,7 +22,6 @@
   (:or (:seq (:? literal-integer) "." literal-integer) (:seq literal-integer ".")))
 
 
-(define-lex-abbrev reserved-symbol (char-set ";,[](){}"))
 (define-lex-abbrev name (:seq alphabetic (:* (:or alphabetic numeric "_"))))
 (define-lex-abbrev operator (:+ (char-set "#.!=<>+-/*^%:")))
 
@@ -31,10 +30,17 @@
   (define (next-token)
     (define bf-lexer
       (lexer-srcloc
-       [line-comment (next-token)]
-       [(:+ whitespace) (token lexeme #:skip? #true)]
-       [(:seq "}" (:* whitespace-excluding-newline) "\n") (token 'CLOSING-BRACE-AND-NEWLINE lexeme)]
-       [reserved-symbol lexeme]
+       [line-comment (token 'LINE-COMMENT #:skip? #true)]
+       [(:+ whitespace) (token 'WHITESPACE #:skip? #true)]
+       [";" (token 'SEMICOLON)]
+       ["," (token 'COMMA)]
+       ["[" (token 'LEFT-SQUARE-BRACKET)]
+       ["]" (token 'RIGHT-SQUARE-BRACKET)]
+       ["(" (token 'LEFT-PARENTHESIS)]
+       [")" (token 'RIGHT-PARENTHESIS)]
+       ["{" (token 'LEFT-CURLY-BRACKET)]
+       ["}" (token 'RIGHT-CURLY-BRACKET)]
+       [(:seq "}" (:* whitespace-excluding-newline) "\n") (token 'RIGHT-CURLY-BRACKET-AND-NEWLINE)]
        [name (token 'NAME (string->symbol lexeme))]
        [operator (token 'OPERATOR (string->symbol lexeme))]
        [literal-integer (token 'LITERAL-INTEGER (string->number lexeme))]
