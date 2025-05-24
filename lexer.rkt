@@ -4,7 +4,8 @@
 (provide make-tokenizer)
 
 
-(require brag/support)
+(require brag/support
+         racket/string)
 
 
 ;@----------------------------------------------------------------------------------------------------
@@ -16,8 +17,12 @@
 (define-lex-abbrev line-comment (from/to "//" "\n"))
 
 
-(define-lex-abbrev literal-string (:- (from/to "\"" "\"") (:seq any-string "\n" any-string)))
+(define-lex-abbrev literal-single-line-string
+  (:- (from/to "\"" "\"") (:seq any-string "\n" any-string)))
+
+(define-lex-abbrev literal-multiline-string (from/to "\"\"\"\n" "\"\"\""))
 (define-lex-abbrev literal-integer (:+ (char-set "0123456789")))
+
 (define-lex-abbrev literal-decimal
   (:or (:seq (:? literal-integer) "." literal-integer) (:seq literal-integer ".")))
 
@@ -44,7 +49,15 @@
    [operator (token 'OPERATOR (string->symbol lexeme))]
    [literal-integer (token 'LITERAL-INTEGER (string->number lexeme))]
    [literal-decimal (token 'LITERAL-DECIMAL (string->number lexeme))]
-   [literal-string (token 'LITERAL-STRING (substring lexeme 1 (sub1 (string-length lexeme))))]))
+   [literal-single-line-string
+    (token 'LITERAL-STRING (substring lexeme 1 (sub1 (string-length lexeme))))]
+   [literal-multiline-string
+    (let ()
+      (define indentation (position-col start-pos))
+      (define indented-string (substring lexeme 3 (- (string-length lexeme) 3)))
+      (define without-indentation
+        (string-replace indented-string (string-append "\n" (make-string indentation #\space)) "\n"))
+      (token 'LITERAL-STRING without-indentation))]))
 
 
 (define ((make-tokenizer port))
