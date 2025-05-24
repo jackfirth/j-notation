@@ -10,7 +10,8 @@
 
 (define deps
   (list "brag-lib"
-        "base"))
+        "base"
+        "resyntax"))
 
 (define build-deps
   (list "racket-doc"

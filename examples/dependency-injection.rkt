@@ -16,14 +16,14 @@ injectable class RealBillingService {
   inject transactionLog: #[Named("production")] TransactionLog;
 
   method chargeOrder(order: PizzaOrder, creditCard: CreditCard): Receipt;
-};
+}
 
 record InjectionKey(optional qualifier: Qualifier, type: Type);
 
 repeated annotation injects(key: InjectionKey) {
   constructor injects(optional qualifier: Qualifier, type: Type) =
     construct(InjectionKey(qualifier, type));
-};
+}
 
 annotation injected(optional qualifier: Qualifier);
 
@@ -48,8 +48,8 @@ class RealBillingService {
     formatter = injector.inject(ReceiptFormatter);
     processor = injector.inject(PayPal, CreditCardProcessor); // optional qualifier passed as argument
     transactionLog = injector.inject(Named("production"), TransactionLog);
-  };
-};
+  }
+}
 
 // Interfaces should be able to declare injected dependencies that all implementations
 // must provide. This lets interface methods depend on injected dependencies.
@@ -65,9 +65,9 @@ injectable interface ImageLoader {
     } catch(e: LoadFailure) {
       logger.atWarning().withCause(e).log("Could not load image " + source);
       absent;
-    };
-  };
-};
+    }
+  }
+}
 
 // The injectable interface above should expand to an interface with a logger property.
 // It should also add static information to the interface that classes use when generating
@@ -86,6 +86,6 @@ interface ImageLoader {
     } catch(e: LoadFailure) {
       logger.atWarning().withCause(e).log("Could not load image " + source);
       absent;
-    };
-  };
-};
+    }
+  }
+}

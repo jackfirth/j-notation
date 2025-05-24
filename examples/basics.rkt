@@ -2,7 +2,7 @@
 
 foo bar;
 
-if (a) { foo };
+if (a) { foo }
 
 "plus";
 

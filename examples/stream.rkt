@@ -5,7 +5,7 @@ interface Sequence[T: Covariant] {
 
   method stream(): Stream[T];
 
-};
+}
 
 
 interface Stream[T: Covariant] {
@@ -25,7 +25,7 @@ interface Stream[T: Covariant] {
 
   method noneMatch(predicate: T -> Boolean): Boolean =
     into(Reducer.noneMatch(predicate));
-};
+}
 
 
 sealed interface ConsumptionResult[S: Covariant, R: Covariant] {
@@ -33,7 +33,7 @@ sealed interface ConsumptionResult[S: Covariant, R: Covariant] {
   record Unfinished(state: S);
 
   record Finished(result: R);
-};
+}
 
 
 interface Reducer[T: Contravariant, R: Covariant, S: Invariant = Any]{
@@ -43,7 +43,7 @@ interface Reducer[T: Contravariant, R: Covariant, S: Invariant = Any]{
   property consumer: Arguments[T, S] -> ReductionResult[S, R];
 
   property finisher: S -> R;
-};
+}
 
 
 interface PerpetualReducer[T: Contravariant, R: Covariant, S: Invariant = Any] {
@@ -52,11 +52,11 @@ interface PerpetualReducer[T: Contravariant, R: Covariant, S: Invariant = Any] {
 
   override property consumer {
     val perpetual = perpetualConsumer();
-    lambda(input, state) { Unfinished(perpetual(input, state)) };
-  };
+    lambda(input, state) { Unfinished(perpetual(input, state)) }
+  }
 
   property perpetualConsumer: Arguments[T, S] -> S;
-};
+}
 
 
 interface Collection[T: Covariant] {
@@ -77,4 +77,4 @@ interface Collection[T: Covariant] {
 
   method containsNone(values: Sequence[CompatibleWith[T]]): Boolean =
     values.stream().noneMatch(contains);
-};
+}
