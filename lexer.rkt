@@ -5,6 +5,8 @@
 
 
 (require brag/support
+         racket/list
+         racket/match
          racket/string)
 
 
@@ -55,7 +57,10 @@
 (define-lex-abbrev operator (:+ (char-set "#.!=<>+-/*^%:")))
 
 
-(struct lexer-result (token next-mode) #:transparent)
+(struct lexer-result (token mode-action) #:transparent)
+
+(struct push-mode (lexer) #:transparent)
+(struct pop-mode () #:transparent)
 
 
 (define j-notation-lexer
@@ -106,7 +111,7 @@
       (define token-value (substring lexeme 1 (- (string-length lexeme) 2)))
       (define raw-token (token 'LEFT-STRING-TEMPLATE token-value))
       (lexer-result (make-srcloc-token raw-token lexeme-srcloc)
-                    j-notation-template-argument-lexer))]))
+                    (push-mode j-notation-template-argument-lexer)))]))
 
 
 (define j-notation-template-argument-lexer
@@ -158,18 +163,22 @@
     (let ()
       (define token-value (substring lexeme 1 (sub1 (string-length lexeme))))
       (define raw-token (token 'RIGHT-STRING-TEMPLATE token-value))
-      (lexer-result (make-srcloc-token raw-token lexeme-srcloc) j-notation-lexer))]))
+      (lexer-result (make-srcloc-token raw-token lexeme-srcloc) (pop-mode)))]))
 
 
 (define (make-tokenizer port)
-  (define lexer j-notation-lexer)
+  (define lexer-stack (list j-notation-lexer))
   (λ ()
-    (define result (lexer port))
-    (cond
-      [(eof-object? result) result]
-      [else
-       (set! lexer (or (lexer-result-next-mode result) lexer))
-       (lexer-result-token result)])))
+    (define result ((first lexer-stack) port))
+    (match result
+      [(? eof-object?) result]
+      [(lexer-result token #false) token]
+      [(lexer-result token (push-mode new-lexer))
+       (set! lexer-stack (cons new-lexer lexer-stack))
+       token]
+      [(lexer-result token (pop-mode))
+       (set! lexer-stack (rest lexer-stack))
+       token])))
 
 
 (define t (make-tokenizer (open-input-string "print(\"One is ${1}, two is ${2}, three is both.\");\n")))
